@@ -39,7 +39,6 @@ class CategoryModel(models.Model):
         else:
             nodn = 1
 
-
         CategoryModel.objects.filter(rgt__gt=self.rgt).update(rgt=models.F('rgt') - nodn*2)
         CategoryModel.objects.filter(lft__gt=self.rgt).update(lft=models.F('lft') - nodn*2)
         super() .delete()
@@ -83,12 +82,12 @@ class CategoryModel(models.Model):
         category.save()
 
 
-
-
-
-
-
-
-
 class ProductModel(models.Model):
-    pass
+    Category = models.ForeignKey(CategoryModel, on_delete=models.SET_DEFAULT, default='All')
+    name = models.CharField(unique=True, max_length=255,null=True)
+    numbers = models.PositiveIntegerField(default=1)
+    description = models.TextField(null=True,blank=True)
+    tag = models.CharField(null=True, max_length=127)
+    price = models.PositiveBigIntegerField(null=True)
+    discount = models.DecimalField(max_digits=4,decimal_places=2, null=True,blank=True)  # this is percentage.
+    available = models.BooleanField(default=True)
