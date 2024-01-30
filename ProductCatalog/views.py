@@ -2,7 +2,12 @@ from django.shortcuts import render
 from .models import CategoryModel
 from rest_framework import generics
 
-from .serializer import CategoryCreateSerializer, CategoryUpdateSerializer
+from .serializer import CategoryCreateSerializer, CategoryUpdateSerializer, CategoryTestSerializer
+
+
+class CategoryTestView(generics.ListAPIView):
+    serializer_class = CategoryTestSerializer
+    queryset = CategoryModel.objects.all()
 
 
 class CategoryCreateView(generics.CreateAPIView):
@@ -11,26 +16,37 @@ class CategoryCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         data = serializer.validated_data
+        parent_id = self.request.data.get('parent_id')
 
-        instance = CategoryModel(**data)
+        if parent_id:
+            parent = CategoryModel.objects.get(id=parent_id)
+            child = parent.add_child(data['name'])
+            serializer.instance = child
 
-        instance.add_child()
+        else:
+            root = CategoryModel.create_root_category(data['name'])
+            serializer.instance = root
 
-        instance.save()
+        serializer.save()
 
 
-class CategoryEditView(generics.RetrieveUpdateDestroyAPIView):
+class CategoryMoveView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CategoryUpdateSerializer
     queryset = CategoryModel.objects.all()
 
     def perform_update(self, serializer):
         instance = self.get_object()
-        destination = self.request.data.get('destination')
-        instance.move(destination=destination)
-        serializer.save()
+        destination_id = self.request.data.get('destination')
+        instance.move(destination_id=destination_id)
 
-    def perform_destroy(self, instance):
-        instance.delete()
+
+class CategoryEditNameView(generics.RetrieveUpdateAPIView):
+    serializer_class = CategoryUpdateSerializer
+    queryset = CategoryModel.objects.all()
+    def perform_update(self, serializer):
+        instance = self.get_object()
+        new_name = self.request.data.get('name')
+        instance.edit_name(name=new_name)
 
 
 
