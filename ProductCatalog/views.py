@@ -1,52 +1,88 @@
 from django.shortcuts import render
-from .models import CategoryModel
-from rest_framework import generics
+from rest_framework.response import Response
 
-from .serializer import CategoryCreateSerializer, CategoryUpdateSerializer, CategoryTestSerializer
+from .models import CategoryModel, ProductModel
+from rest_framework import generics, viewsets, status
+from .serializer import CategorySerializer, ProductAddEditSerializer
 
+
+#  ///////////  Category related views  ///////////
 
 class CategoryTestView(generics.ListAPIView):
-    serializer_class = CategoryTestSerializer
+    serializer_class = CategorySerializer
     queryset = CategoryModel.objects.all()
 
 
 class CategoryCreateView(generics.CreateAPIView):
-    serializer_class = CategoryCreateSerializer
+    serializer_class = CategorySerializer
     queryset = CategoryModel.objects.all()
 
-    def perform_create(self, serializer):
-        data = serializer.validated_data
-        parent_id = self.request.data.get('parent_id')
 
-        if parent_id:
-            parent = CategoryModel.objects.get(id=parent_id)
-            child = parent.add_child(data['name'])
-            serializer.instance = child
-
-        else:
-            root = CategoryModel.create_root_category(data['name'])
-            serializer.instance = root
-
-        serializer.save()
-
-
-class CategoryMoveView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = CategoryUpdateSerializer
+class CategoryEditView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = CategorySerializer
     queryset = CategoryModel.objects.all()
 
-    def perform_update(self, serializer):
+    def perform_destroy(self, instance):
+        parents = instance.parent.all()
+        children = CategoryModel.objects.filter(parent=instance)
+        products = ProductModel.objects.filter(category=instance)
+
+        for child in children:
+            child.parent.set(parents)
+
+        for product in products:
+            product.category.set(parents)
+
+        instance.delete()
+
+#  /////  ^^^^^  ///////
+
+# //////////    Product related views    //////////
+
+
+class ProductView(viewsets.ModelViewSet):
+    serializer_class = ProductAddEditSerializer
+    queryset = ProductModel.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        print('in the list function')
+        return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        product_serializer = self.get_serializer(data=request.data)
+        product_serializer.is_valid(raise_exception=True)
+        self.perform_create(product_serializer)
+
+        return Response(product_serializer.data, status=status.HTTP_201_CREATED)
+
+    def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        destination_id = self.request.data.get('destination')
-        instance.move(destination_id=destination_id)
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
-
-class CategoryEditNameView(generics.RetrieveUpdateAPIView):
-    serializer_class = CategoryUpdateSerializer
-    queryset = CategoryModel.objects.all()
-    def perform_update(self, serializer):
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        new_name = self.request.data.get('name')
-        instance.edit_name(name=new_name)
+        serializer = self.get_serializer(instance=instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response(serializer.data)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+
+        return Response(status=204)
+
+
+
+
+
+
+
 
 
 

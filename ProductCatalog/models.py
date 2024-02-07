@@ -1,93 +1,33 @@
-from django.db import models
+from django.db import models, connection
 from django.db.models import Q
 
 
 class CategoryModel(models.Model):
     name = models.CharField(unique=True, max_length=100)
-    lft = models.PositiveIntegerField()
-    rgt = models.PositiveIntegerField()
+    parent = models.ManyToManyField('self', related_name='children', blank=True, null=True, symmetrical=False)
 
-    @classmethod
-    def create_root_category(cls, name):
-        root = cls(name=name, lft=1, rgt=2)
-        root.save()
-        return root
-
-    def add_child(self, name):
-        # here we should receive child
-        parent_right = self.rgt
-        CategoryModel.objects.filter(rgt__gte=parent_right).update(rgt=models.F('rgt') + 2)
-        CategoryModel.objects.filter(lft__gt=parent_right).update(lft=models.F('lft') + 2)
-
-        child = CategoryModel(name=name, lft=parent_right, rgt=parent_right+1)
-        child.save()
-        print("we are in the add_child. child is:", child, child.name)
-        return child
-        # for child in children:
-        #     child.lft = cache
-        #     child.rgt = cache + 1
-        #
-        #     child.save()
-
-    def delete(self):
-        deleting_nodes = self.get_descendants()
-        if deleting_nodes:
-            # nodn = number of deleting nodes
-
-            nodn = deleting_nodes.count() + 1
-            deleting_nodes.delete()
-        else:
-            nodn = 1
-
-        CategoryModel.objects.filter(rgt__gt=self.rgt).update(rgt=models.F('rgt') - nodn*2)
-        CategoryModel.objects.filter(lft__gt=self.rgt).update(lft=models.F('lft') - nodn*2)
-        super() .delete()
-
-    def get_descendants(self):
-        descendants = CategoryModel.objects.filter(Q(rgt__lt=self.rgt) & Q(lft__gt=self.lft)).order_by('lft')
-        return descendants
-
-    def get_ancestors(self):
-        ancestors = CategoryModel.objects.filter(Q(rgt__gt=self.rgt) & Q(lft__lt=self.lft)).order_by('-lft')
-        return ancestors
-
-    def move(self, destination_id):
-        destination = CategoryModel.objects.get(pk=destination_id)
-
-        root = self
-        root.name += 'm'
-        root.save()
-        moved_root_name = root.name[:-1]
-
-        destination.add_child(moved_root_name)
-        root.refresh_from_db()
-
-        branch = list(root.get_descendants())
-
-        for node in branch:
-            node.name += 'm'
-            node.save()
-
-        for node in branch:
-            ancestor = node.get_ancestors().first()
-            ancestor = CategoryModel.objects.get(name=ancestor.name[:-1])
-            ancestor.add_child(node.name[:-1])
-        root.refresh_from_db()
-
-        root.delete()
-
-    def edit_name(self, name):
-        category = CategoryModel.objects.get(pk=self.pk)
-        category.name = name
-        category.save()
+    def __str__(self):
+        return self.name
 
 
 class ProductModel(models.Model):
-    Category = models.ForeignKey(CategoryModel, on_delete=models.SET_DEFAULT, default='All')
-    name = models.CharField(unique=True, max_length=255,null=True)
+    category = models.ManyToManyField(CategoryModel, symmetrical=False, related_name='category')  # remember that you need to write
+    # something to handle changing category of a product, after deleting or moving the category.
+
+    name = models.CharField(unique=True, max_length=255, null=True)
     numbers = models.PositiveIntegerField(default=1)
-    description = models.TextField(null=True,blank=True)
-    tag = models.CharField(null=True, max_length=127)
-    price = models.PositiveBigIntegerField(null=True)
-    discount = models.DecimalField(max_digits=4,decimal_places=2, null=True,blank=True)  # this is percentage.
+    description = models.TextField(null=True, blank=True)
+    tag = models.CharField(null=True,blank=True, max_length=127)
+    price = models.DecimalField(max_digits=13, decimal_places=3,null=True)
+    discount = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)  # this is percentage.
     available = models.BooleanField(default=True)
+
+    @property
+    def final_price(self):
+        discount_amount = self.price * (self.discount/100)
+        return self.price - discount_amount
+
+
+class ProductImage(models.Model):
+    product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name='image')
+    image = models.ImageField(upload_to='images/product_image', blank=True)  # check if you want to use caching
