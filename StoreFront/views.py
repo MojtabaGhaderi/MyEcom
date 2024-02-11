@@ -5,19 +5,83 @@ from ProductCatalog.models import ProductModel, CategoryModel
 from .serializer import ProductsSerializer, ProductDetailSerializer
 
 
+def filter_products(queryset, params):
+    category = params.get('category')
+    max_price = params.get('max_price')
+    min_price = params.get('min_price')
+    has_discount = params.get('has_discount')
+    available = params.get('available')
+
+    if category:
+        queryset = queryset.filter(category__name=category)
+
+    if max_price and min_price:
+        queryset = queryset.filter(final_price__gte=min_price, final_price__lte=max_price)
+    elif max_price:
+        queryset = queryset.filter(final_price__lte=max_price)
+    elif min_price:
+        queryset = queryset.filter(final_price__gte=min_price)
+
+    if has_discount:
+        queryset = queryset.filter(discount__gt=0)
+
+    if available:
+        queryset = queryset.filter(available=True)
+
+    return queryset
+
+
+def order_products(queryset, params):
+    sort_by = params.get('sort_by')
+
+    if sort_by == 'name':
+        queryset = queryset.order_by('name')
+    elif sort_by == 'discount':
+        queryset = queryset.order_by('discount')
+    elif sort_by == 'price':
+        queryset = queryset.order_by('price')
+    elif sort_by == 'final_price':
+        queryset = queryset.order_by('final_price')
+    elif sort_by == 'likes':
+        queryset = queryset.order_by('likes')
+    elif sort_by == 'sold_counts':
+        queryset = queryset.order_by('sold_count')
+
+    # Add the `-` prefix for descending order
+    if sort_by.startswith('-'):
+        queryset = queryset.reverse()
+
+    return queryset
+
+
 # list of all the products or filtering them by category
 class ProductListView(generics.ListAPIView):
-    model = ProductModel.objects.all()
+    queryset = ProductModel.objects.all()
     serializer_class = ProductsSerializer
 
     def get_queryset(self):
-        category = self.request.query_params.get('category')
+        queryset = super().get_queryset()
+        params = self.request.query_params
 
-        if category:
-            queryset = ProductModel.objects.filter(category=category)
-        else:
-            queryset = ProductModel.objects.all()
+        if 'filtering' in params:
+            queryset = filter_products(queryset, params)
+        if 'sort_by' in params:
+            queryset = order_products(queryset, params)
+        return queryset
 
+
+class SpecialOfferListView(generics.ListAPIView):
+    queryset = ProductModel.objects.filter(special_offer=True)
+    serializer_class = ProductsSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        params = self.request.query_params
+
+        if 'filtering' in params:
+            queryset = filter_products(queryset, params)
+        if 'sort_by' in params:
+            queryset = order_products(queryset, params)
         return queryset
 
 
@@ -29,10 +93,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     def get_serializer(self, *args, **kwargs):
         serializer_class = self.get_serializer_class()
         kwargs['context'] = self.get_serializer_context()
-        print("we are in def get_serializer")
         if self.get_object().discount:
-            print("object", self.get_object())
-            print("discount:", self.get_object().discount)
             kwargs['context']['show_final_price'] = True
 
         return self.serializer_class(*args, **kwargs)

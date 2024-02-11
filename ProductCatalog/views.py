@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .models import CategoryModel, ProductModel
 from rest_framework import generics, viewsets, status
-from .serializer import CategorySerializer, ProductAddEditSerializer
+from .serializer import CategorySerializer, ProductAddEditSerializer, ProductUpdateSerializer
 
 
 #  ///////////  Category related views  ///////////
@@ -47,7 +48,6 @@ class ProductView(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
-        print('in the list function')
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
@@ -76,6 +76,24 @@ class ProductView(viewsets.ModelViewSet):
         self.perform_destroy(instance)
 
         return Response(status=204)
+
+
+class ProductBatchUpdateView(APIView):
+    serializer_class = ProductUpdateSerializer
+
+    def put(self, request):
+        serializer = self.serializer_class(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_batch_update(serializer)
+        return Response({'message': 'Batch update was successful'})
+
+    def perform_batch_update(self, serializer):
+        for item in serializer.validated_data:
+            product_id = item['id']
+            product = ProductModel.objects.get(id=product_id)
+            product.special_offer = item['special_offer']
+            product.discount = item['discount']
+            product.save()
 
 
 

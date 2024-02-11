@@ -41,3 +41,12 @@ class ProductAddEditSerializer(serializers.ModelSerializer):
             for image_data in images_data:
                 ProductImage.objects.create(product=product, **image_data)
         return product
+
+
+class ProductUpdateSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False)
+
+    class Meta:
+        model = ProductModel
+        fields = ['id', 'special_offer', 'discount']
+
