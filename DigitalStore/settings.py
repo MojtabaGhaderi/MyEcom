@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_cron',
     'ProductCatalog',
-    'StoreFront'
+    'StoreFront',
+    'UserManagement'
 ]
 
 MIDDLEWARE = [
