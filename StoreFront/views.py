@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from rest_framework import generics
 
+from rest_framework.filters import SearchFilter
+
 from ProductCatalog.models import ProductModel, CategoryModel
 from .serializer import ProductsSerializer, ProductDetailSerializer
 
@@ -62,11 +64,16 @@ def order_products(queryset, params):
 class ProductListView(generics.ListAPIView):
     queryset = ProductModel.objects.all()
     serializer_class = ProductsSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['name', 'description', 'tag']
 
     def get_queryset(self):
         queryset = super().get_queryset()
         params = self.request.query_params
-
+        search_query = params.get('search')
+        if search_query:
+            queryset = queryset.filter(name__icontains=search_query)
+            return queryset
         if 'filtering' in params:
             queryset = filter_products(queryset, params)
         if 'sort_by' in params:
@@ -77,11 +84,16 @@ class ProductListView(generics.ListAPIView):
 class SpecialOfferListView(generics.ListAPIView):
     queryset = ProductModel.objects.filter(special_offer=True)
     serializer_class = ProductsSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['name', 'description', 'tag']
 
     def get_queryset(self):
         queryset = super().get_queryset()
         params = self.request.query_params
-
+        search_query = params.get('search')
+        if search_query:
+            queryset = queryset.filter(name__icontains=search_query)
+            return queryset
         if 'filtering' in params:
             queryset = filter_products(queryset, params)
         if 'sort_by' in params:
@@ -92,11 +104,16 @@ class SpecialOfferListView(generics.ListAPIView):
 class LastProductsView(generics.ListAPIView):
     queryset = ProductModel.objects.filter(recently_added=True)
     serializer_class = ProductsSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['name', 'description', 'tag']
 
     def get_queryset(self):
         queryset = super().get_queryset()
         params = self.request.query_params
-
+        search_query = params.get('search')
+        if search_query:
+            queryset = queryset.filter(name__icontains=search_query)
+            return queryset
         if 'filtering' in params:
             queryset = filter_products(queryset, params)
         if 'sort_by' in params:
