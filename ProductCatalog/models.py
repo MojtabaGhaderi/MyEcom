@@ -23,6 +23,8 @@ class ProductModel(models.Model):
     sold_counts = models.IntegerField(default=0, editable=False)  # this only change throughout sold signal.
     likes = models.IntegerField(default=0, editable=False)  # this only change throughout sold signal.
     special_offer = models.BooleanField(default=False)
+    date_added = models.DateTimeField(auto_now_add=True)
+    recently_added = models.BooleanField(default=False)
 
     @property
     def final_price(self):

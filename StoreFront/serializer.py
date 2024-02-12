@@ -16,9 +16,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductModel
         fields = '__all__'
-        # read_only_fields = '__all__'
 
     def get_final_price(self, obj):
-        if self.context.get('show_final_price'):
-            return obj.final_price
-        return None
+        return obj.final_price
+

@@ -89,12 +89,3 @@ class SpecialOfferListView(generics.ListAPIView):
 class ProductRetrieveView(generics.RetrieveAPIView):
     queryset = ProductModel.objects.all()
     serializer_class = ProductDetailSerializer
-
-    def get_serializer(self, *args, **kwargs):
-        serializer_class = self.get_serializer_class()
-        kwargs['context'] = self.get_serializer_context()
-        if self.get_object().discount:
-            kwargs['context']['show_final_price'] = True
-
-        return self.serializer_class(*args, **kwargs)
-
