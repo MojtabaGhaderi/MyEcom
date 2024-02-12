@@ -11,6 +11,7 @@ def filter_products(queryset, params):
     min_price = params.get('min_price')
     has_discount = params.get('has_discount')
     available = params.get('available')
+    recently_added = params.get('recently_added')
 
     if category:
         queryset = queryset.filter(category__name=category)
@@ -25,8 +26,11 @@ def filter_products(queryset, params):
     if has_discount:
         queryset = queryset.filter(discount__gt=0)
 
-    if available:
+    if available is True:
         queryset = queryset.filter(available=True)
+
+    if recently_added is True:
+        queryset = queryset.filter(recently_added=True)
 
     return queryset
 
@@ -72,6 +76,21 @@ class ProductListView(generics.ListAPIView):
 
 class SpecialOfferListView(generics.ListAPIView):
     queryset = ProductModel.objects.filter(special_offer=True)
+    serializer_class = ProductsSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        params = self.request.query_params
+
+        if 'filtering' in params:
+            queryset = filter_products(queryset, params)
+        if 'sort_by' in params:
+            queryset = order_products(queryset, params)
+        return queryset
+
+
+class LastProductsView(generics.ListAPIView):
+    queryset = ProductModel.objects.filter(recently_added=True)
     serializer_class = ProductsSerializer
 
     def get_queryset(self):
