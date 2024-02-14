@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'ProductCatalog',
     'StoreFront',
     'UserManagement',
+    'ShoppingCart',
 ]
 
 MIDDLEWARE = [
