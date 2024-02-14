@@ -24,6 +24,7 @@ urlpatterns = [
     path('', include('StoreFront.urls')),
     path('admin/', admin.site.urls),
     path('BackStore/', include('ProductCatalog.urls')),
+    path('user/', include('UserManagement.urls')),
 ]
 
 
