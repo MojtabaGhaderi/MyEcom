@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from ShoppingCart.models import ShoppingCartModel
 
 
 class UserManageModel(AbstractUser):
@@ -8,4 +9,5 @@ class UserManageModel(AbstractUser):
 
     def __str__(self):
         return self.username
+
 
