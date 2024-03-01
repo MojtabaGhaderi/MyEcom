@@ -61,8 +61,10 @@
 #     return response
 
 
-def pay_status():
-    return True
+# def pay_status():
+#     payed = True
+#     if payed:
+
 
 
 def payment(price):
