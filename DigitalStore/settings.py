@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-px48^nl6aayc!qa@w^cme0wohfil8juin^ee0^7^g5_-tqfyp#
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+SANDBOX = True
 
 # Application definition
 
@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'StoreFront',
     'UserManagement',
     'ShoppingCart',
+    'PaymentGateway',
+
 ]
 
 MIDDLEWARE = [
@@ -91,6 +93,7 @@ DATABASES = {
     }
 }
 
+
 AUTH_USER_MODEL = 'UserManagement.UserManageModel'
 
 # Password validation
@@ -111,10 +114,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
+    ]
 }
 
 
@@ -146,3 +152,8 @@ MEDIA_URL = '/media/'
 CRON_CLASSES = [
     'ProductCatalog.cron.RecentlyAddedCronJob',
 ]
+
+
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'

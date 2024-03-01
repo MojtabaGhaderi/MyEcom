@@ -14,7 +14,7 @@ class ProductModel(models.Model):
     category = models.ManyToManyField(CategoryModel, symmetrical=False, related_name='category')
 
     name = models.CharField(unique=True, max_length=255, null=True)
-    numbers = models.PositiveIntegerField(default=1)
+    numbers = models.PositiveIntegerField(default=1)  # change this to quantity
     description = models.TextField(null=True, blank=True)
     tag = models.CharField(null=True, blank=True, max_length=127)
     price = models.DecimalField(max_digits=13, decimal_places=3, null=True)
