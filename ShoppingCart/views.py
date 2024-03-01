@@ -148,8 +148,7 @@ class EmptyUserShoppingCart(generics.DestroyAPIView):
 
 
 
-class Payment(APIView):
-    pass
+
 
 
 
