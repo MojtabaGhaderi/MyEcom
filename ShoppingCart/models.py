@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils import timezone
+
 from ProductCatalog.models import ProductModel
 from UserManagement.models import UserManageModel
 
@@ -24,9 +26,25 @@ class InvoiceModel(models.Model):
     invoice_products = models.ManyToManyField(ProductModel, through='InvoiceItemModel')
     payment_status = models.BooleanField(default=False)  # maybe later change this to a choice field.
     # or even a Charfield.
-    invoice_number = models.PositiveIntegerField(default=1)
+    amount = models.DecimalField(max_digits=15, decimal_places=3)
+    invoice_number = models.CharField(max_length=20, unique=True)
     tracking_code = models.PositiveIntegerField(null=True, blank=True)  # for now null and blank is True
     date = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.invoice_number:
+            current_year = timezone.now().year
+            last_invoice = InvoiceModel.objects.filter(
+                invoice_number__startswith=current_year).order_by('-invoice_nuber').first
+
+            if last_invoice:
+                last_invoice_number = int(last_invoice.invoice_number.split('-')[1])
+                new_invoice_number = f"{current_year}-{last_invoice_number + 1:04d}"
+
+            else:
+                new_invoice_number = f"{current_year}-0001"
+            self.invoice_number = new_invoice_number
+        super().save(*args, **kwargs)
 
 
 class InvoiceItemModel(models.Model):

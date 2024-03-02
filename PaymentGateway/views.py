@@ -76,3 +76,4 @@ def generate_invoice(request, shopping_cart_id):
     invoice.save()
 
 
+
