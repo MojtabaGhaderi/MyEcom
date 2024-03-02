@@ -59,15 +59,20 @@
 #         else:
 #             return {'status': False, 'code': str(response['Status'])}
 #     return response
+from django.shortcuts import get_object_or_404
+from rest_framework.views import APIView
+
+from ShoppingCart.models import InvoiceModel, ShoppingCartModel
 
 
-# def pay_status():
-#     payed = True
-#     if payed:
+def generate_invoice(request, shopping_cart_id):
+    shopping_cart = get_object_or_404(ShoppingCartModel, id=shopping_cart_id)
 
+    invoice = InvoiceModel.objects.create(user=shopping_cart.user)
 
+    for cart_item in shopping_cart.cartitmemodel_set.all():
+        invoice.invoice_products.add(cart_item.product, through_defaults={'quantity': cart_item.quantity})
 
-def payment(price):
-    print('price is:', price)
-    return True
+    invoice.save()
+
 
