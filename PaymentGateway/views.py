@@ -61,11 +61,5 @@
 #     return response
 
 
-def pay_status():
-    return True
 
-
-def payment(price):
-    print('price is:', price)
-    return True
 
