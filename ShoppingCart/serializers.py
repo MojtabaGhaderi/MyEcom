@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import ShoppingCartModel
+from .models import ShoppingCartModel, InvoiceModel
 
 
 class ShoppingCartSerializer(serializers.ModelSerializer):
@@ -22,3 +22,9 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
 class ShoppingCartUpdateSerializer(serializers.Serializer):
     quantities = serializers.DictField(child=serializers.IntegerField(min_value=0), required=False)
     deleted_products = serializers.ListField(child=serializers.IntegerField(min_value=1), required=False)
+
+
+class InvoiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InvoiceModel
+        fields = '__all__'

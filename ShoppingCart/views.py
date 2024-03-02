@@ -4,8 +4,8 @@ from rest_framework.views import APIView
 
 from UserManagement.models import UserManageModel
 from ProductCatalog.models import ProductModel
-from .models import ShoppingCartModel, CartItemModel
-from .serializers import ShoppingCartSerializer, ShoppingCartUpdateSerializer
+from .models import ShoppingCartModel, CartItemModel, InvoiceModel
+from .serializers import ShoppingCartSerializer, ShoppingCartUpdateSerializer, InvoiceSerializer
 
 
 class AddProductToCartView(APIView):
@@ -146,6 +146,20 @@ class EmptyUserShoppingCart(generics.DestroyAPIView):
             item.delete()
         return Response(status=status.HTTP_200_OK)
 
+
+class InvoiceListView(generics.ListAPIView):
+    queryset = InvoiceModel.objects.all()
+    serializer_class = InvoiceSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = InvoiceModel.objects.filter(user=user)
+        return queryset
+
+
+class InvoiceDetailView(generics.RetrieveAPIView):
+    queryset = InvoiceModel.objects.all()
+    serializer_class = InvoiceSerializer
 
 
 
