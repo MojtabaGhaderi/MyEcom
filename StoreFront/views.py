@@ -3,7 +3,8 @@ from rest_framework import generics
 
 from rest_framework.filters import SearchFilter
 
-from ProductCatalog.models import ProductModel, CategoryModel
+from ProductCatalog.models import ProductModel, CategoryModel, ProductComment
+from ProductCatalog.serializer import CommentSerializer
 from .serializer import ProductsSerializer, ProductDetailSerializer
 
 
@@ -78,6 +79,16 @@ class ProductListView(generics.ListAPIView):
             queryset = filter_products(queryset, params)
         if 'sort_by' in params:
             queryset = order_products(queryset, params)
+        return queryset
+
+
+class ProductCommentView(generics.ListAPIView):
+    queryset = ProductComment.objects.all()
+    serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        product_id = self.kwargs['product_id']
+        queryset = ProductComment.objects.filter(product=product_id)
         return queryset
 
 

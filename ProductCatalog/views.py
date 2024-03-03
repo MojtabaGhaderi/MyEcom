@@ -2,9 +2,9 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import CategoryModel, ProductModel
+from .models import CategoryModel, ProductModel, ProductComment
 from rest_framework import generics, viewsets, status
-from .serializer import CategorySerializer, ProductAddEditSerializer, ProductUpdateSerializer
+from .serializer import CategorySerializer, ProductAddEditSerializer, ProductUpdateSerializer, CommentSerializer
 
 
 #  ///////////  Category related views  ///////////
@@ -76,6 +76,11 @@ class ProductView(viewsets.ModelViewSet):
         self.perform_destroy(instance)
 
         return Response(status=204)
+
+
+class ProductCommentDelete(generics.DestroyAPIView):  # admin related view
+    queryset = ProductComment.objects.all()
+    serializer_class = CommentSerializer
 
 
 class ProductBatchUpdateView(APIView):

@@ -1,6 +1,8 @@
 from django.db import models, connection
 from django.db.models import Q
 
+from UserManagement.models import UserManageModel
+
 
 class CategoryModel(models.Model):
     name = models.CharField(unique=True, max_length=100)
@@ -26,6 +28,7 @@ class ProductModel(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
     recently_added = models.BooleanField(default=False)
 
+
     @property
     def final_price(self):
         discount_amount = self.price * (self.discount/100)
@@ -35,3 +38,11 @@ class ProductModel(models.Model):
 class ProductImage(models.Model):
     product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name='image')
     image = models.ImageField(upload_to='images/product_image', blank=True)  # check if you want to use caching
+
+
+class ProductComment(models.Model):
+    product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name='comment')
+    user = models.ForeignKey(UserManageModel, on_delete=models.DO_NOTHING, related_name='user_comment')
+    comment = models.CharField(max_length=512)
+
+

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CategoryModel, ProductModel, ProductImage
+from .models import CategoryModel, ProductModel, ProductImage, ProductComment
 
 
 #  ///////////  Category related serializers  ///////////
@@ -41,6 +41,13 @@ class ProductAddEditSerializer(serializers.ModelSerializer):
             for image_data in images_data:
                 ProductImage.objects.create(product=product, **image_data)
         return product
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductComment
+        fields = '__all__'
+
 
 
 class ProductUpdateSerializer(serializers.ModelSerializer):
