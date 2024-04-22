@@ -6,9 +6,11 @@ from UserManagement.models import UserManageModel
 from ProductCatalog.models import ProductModel
 from .models import ShoppingCartModel, CartItemModel, InvoiceModel
 from .serializers import ShoppingCartSerializer, ShoppingCartUpdateSerializer, InvoiceSerializer
+from core.permissions import IsAdminOrSelf
 
 
 class AddProductToCartView(APIView):
+    permission_classes = IsAdminOrSelf
 
     def post(self, request):
         try:
@@ -55,6 +57,7 @@ class AddProductToCartView(APIView):
 
 
 class UserShoppingCardView(APIView):
+    permission_classes = IsAdminOrSelf
     serializer_class = ShoppingCartSerializer
 
     def get_object(self):
@@ -92,6 +95,7 @@ class UserShoppingCardView(APIView):
 
 
 class UserShoppingCartUpdate(generics.UpdateAPIView):
+    permission_classes = IsAdminOrSelf
     serializer_class = ShoppingCartUpdateSerializer
     queryset = ShoppingCartModel.objects.all()
 
@@ -132,6 +136,7 @@ class UserShoppingCartUpdate(generics.UpdateAPIView):
 
 
 class EmptyUserShoppingCart(generics.DestroyAPIView):
+    permission_classes = IsAdminOrSelf
     serializer_class = ShoppingCartSerializer
     queryset = ShoppingCartModel.objects.all()
 
@@ -148,9 +153,11 @@ class EmptyUserShoppingCart(generics.DestroyAPIView):
 
 
 class InvoiceListView(generics.ListAPIView):
+    permission_classes = IsAdminOrSelf
     queryset = InvoiceModel.objects.all()
     serializer_class = InvoiceSerializer
-
+# permission for being admin. we want to add a permission so admins can come here too. I think I must add an if
+    # statement in def get_queryset
     def get_queryset(self):
         user = self.request.user
         queryset = InvoiceModel.objects.filter(user=user)
@@ -158,8 +165,13 @@ class InvoiceListView(generics.ListAPIView):
 
 
 class InvoiceDetailView(generics.RetrieveAPIView):
+    permission_classes = IsAdminOrSelf
+    # same as above here
     queryset = InvoiceModel.objects.all()
     serializer_class = InvoiceSerializer
+
+
+
 
 
 

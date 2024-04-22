@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from UserManagement.models import UserManageModel
+from UserManagement.serializers import UserSerializer
 from .models import CategoryModel, ProductModel, ProductComment
 from rest_framework import generics, viewsets, status
 from .serializer import CategorySerializer, ProductAddEditSerializer, ProductUpdateSerializer, CommentSerializer
+from core.permissions import IsAdmin
 
 
 #  ///////////  Category related views  ///////////
@@ -15,11 +17,13 @@ class CategoryTestView(generics.ListAPIView):
 
 
 class CategoryCreateView(generics.CreateAPIView):
+    permission_classes = IsAdmin
     serializer_class = CategorySerializer
     queryset = CategoryModel.objects.all()
 
 
 class CategoryEditView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = IsAdmin
     serializer_class = CategorySerializer
     queryset = CategoryModel.objects.all()
 
@@ -42,6 +46,7 @@ class CategoryEditView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ProductView(viewsets.ModelViewSet):
+    permission_classes = IsAdmin
     serializer_class = ProductAddEditSerializer
     queryset = ProductModel.objects.all()
 
@@ -79,11 +84,13 @@ class ProductView(viewsets.ModelViewSet):
 
 
 class ProductCommentDelete(generics.DestroyAPIView):  # admin related view
+    permission_classes = IsAdmin
     queryset = ProductComment.objects.all()
     serializer_class = CommentSerializer
 
 
 class ProductBatchUpdateView(APIView):
+    permission_classes = IsAdmin
     serializer_class = ProductUpdateSerializer
 
     def put(self, request):
@@ -101,6 +108,16 @@ class ProductBatchUpdateView(APIView):
             product.save()
 
 
+class UserListView(generics.ListAPIView):
+    permission_classes = IsAdmin
+    queryset = UserManageModel.objects.all()
+    serializer_class = UserSerializer
+
+
+class UserRetrieveView(generics.RetrieveUpdateAPIView):
+    permission_classes = IsAdmin
+    queryset = UserManageModel.objects.all()
+    serializer_class = UserSerializer
 
 
 

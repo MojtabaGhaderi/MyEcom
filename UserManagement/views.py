@@ -7,8 +7,10 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.response import Response
 
-from .models import UserManageModel
-from .serializers import UserSerializer, UserRegistrationSerializer, UserProfileSerializer, UserLoginSerializer
+from .models import UserManageModel, AdminModel
+from core.permissions import IsAdminOrSelf, IsSuperAdmin
+from .serializers import UserSerializer, UserRegistrationSerializer, UserProfileSerializer, UserLoginSerializer, \
+    CreateAdminSerializer
 
 
 # //////////
@@ -16,14 +18,10 @@ from .serializers import UserSerializer, UserRegistrationSerializer, UserProfile
 # views for admins:
 
 
-class UserListView(generics.ListAPIView):
-    queryset = UserManageModel.objects.all()
-    serializer_class = UserSerializer
+# class UserListView(generics.ListAPIView):
+#     queryset = UserManageModel.objects.all()
+#     serializer_class = UserSerializer
 
-
-class UserRetrieveView(generics.RetrieveUpdateAPIView):
-    queryset = UserManageModel.objects.all()
-    serializer_class = UserSerializer
 
 # /////////
 
@@ -67,6 +65,7 @@ class UserRegistrationView(generics.CreateAPIView):
 
 
 class UserProfileView(generics.RetrieveUpdateAPIView):
+    permission_classes = IsAdminOrSelf
     queryset = UserManageModel.objects.all()
     serializer_class = UserProfileSerializer
 
@@ -75,5 +74,6 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
 
     def get_queryset(self):
         return self.queryset.filter(user=self.get_object())
+
 
 

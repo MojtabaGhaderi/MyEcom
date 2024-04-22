@@ -10,7 +10,7 @@ urlpatterns = [
     path('update/', UserShoppingCartUpdate.as_view(), name='cart-update'),
     path('empty/', EmptyUserShoppingCart.as_view(), name='empty-cart'),
     path('view/', UserShoppingCardView.as_view(), name='cart_view'),
-    path('invoice/', InvoiceListView.as_view(), name='invoice_list'),
+    path('shop-history/', InvoiceListView.as_view(), name='invoice_list'),
     path('invoice/<int:pk>', InvoiceDetailView.as_view(), name='invoice-detail')
 ]
 

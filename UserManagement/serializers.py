@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers
-from .models import UserManageModel
+from .models import UserManageModel, AdminModel
 
 
 class UserLoginSerializer(serializers.ModelSerializer):
@@ -54,3 +54,4 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserManageModel
         fields = ['id', 'username', 'email', 'address', 'phone_number']
+

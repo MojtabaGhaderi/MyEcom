@@ -15,4 +15,8 @@ urlpatterns = [
 
 
     path('discount-special-batch/', views.ProductBatchUpdateView.as_view(), name='product-discount-special'),
+
+    path('user-list/', views.UserListView.as_view(), name='user-list'),
+    path('user-retrieve/<int:pk>/', views.UserRetrieveView.as_view(), name='user-retrieve'),
+
 ]
