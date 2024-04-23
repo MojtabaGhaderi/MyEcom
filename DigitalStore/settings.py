@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'UserManagement',
     'ShoppingCart',
     'PaymentGateway',
+    'OrderManagement',
 
 ]
 
@@ -113,6 +114,15 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 'ECOM-EMAIL'
+# EMAIL_HOST_PASSWORD = 'PASSWORD'
+# EMAIL_USE_TLS = True
+# DEFAULT_FROM_EMAIL = 'ECOM-EMAIL'
 
 
 REST_FRAMEWORK = {

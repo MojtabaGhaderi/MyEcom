@@ -9,8 +9,8 @@ from rest_framework.response import Response
 
 from .models import UserManageModel, AdminModel
 from core.permissions import IsAdminOrSelf, IsSuperAdmin
-from .serializers import UserSerializer, UserRegistrationSerializer, UserProfileSerializer, UserLoginSerializer, \
-    CreateAdminSerializer
+from .serializers import UserSerializer, UserRegistrationSerializer, UserProfileSerializer, UserLoginSerializer
+
 
 
 # //////////

@@ -10,7 +10,7 @@ from core.permissions import IsAdminOrSelf
 
 
 class AddProductToCartView(APIView):
-    permission_classes = IsAdminOrSelf
+    # permission_classes = IsAdminOrSelf
 
     def post(self, request):
         try:
