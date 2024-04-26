@@ -2,11 +2,32 @@ from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from PaymentGateway.models import PaymentModel
 from UserManagement.models import UserManageModel
 from ProductCatalog.models import ProductModel
 from .models import ShoppingCartModel, CartItemModel, InvoiceModel
 from .serializers import ShoppingCartSerializer, ShoppingCartUpdateSerializer, InvoiceSerializer
 from core.permissions import IsAdminOrSelf
+
+
+def calculate_total_price(cart):
+    products = cart.products.all()
+    print("products:", products)
+    total_price = 0
+    final_price = 0
+    for product in products:
+        obj = CartItemModel.objects.get(shopping_cart=cart, products=product)
+        quantity = obj.quantity
+        final_price += product.final_price * quantity
+        total_price += product.price * quantity
+        print("product:", product)
+        print("total price:", total_price)
+        print("final price:", final_price)
+    total_discount = total_price - final_price
+    print("total price:", total_price)
+    print("total discount:", total_discount)
+    print("final price:", final_price)
+    return total_price, total_discount, final_price
 
 
 class AddProductToCartView(APIView):
@@ -67,31 +88,13 @@ class UserShoppingCardView(APIView):
 
     def get(self, request):
         shopping_cart = self.get_object()
-        price = self.calculate_total_price(shopping_cart)
+        price = calculate_total_price(shopping_cart)
         total_price, total_discount, final_price = price
         serializer = self.serializer_class(shopping_cart, context={'total_price': total_price,
                                                                    'total_discount': total_discount,
                                                                    'final_price': final_price})
         return Response(serializer.data)
 
-    def calculate_total_price(self, cart):
-        products = cart.products.all()
-        print("products:", products)
-        total_price = 0
-        final_price = 0
-        for product in products:
-            obj = CartItemModel.objects.get(shopping_cart=cart, products=product)
-            quantity = obj.quantity
-            final_price += product.final_price * quantity
-            total_price += product.price * quantity
-            print("product:", product)
-            print("total price:", total_price)
-            print("final price:", final_price)
-        total_discount = total_price - final_price
-        print("total price:", total_price)
-        print("total discount:", total_discount)
-        print("final price:", final_price)
-        return total_price, total_discount, final_price
 
 
 class UserShoppingCartUpdate(generics.UpdateAPIView):

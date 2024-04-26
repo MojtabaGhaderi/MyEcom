@@ -35,7 +35,7 @@ class InvoiceModel(models.Model):
         if not self.invoice_number:
             current_year = timezone.now().year
             last_invoice = InvoiceModel.objects.filter(
-                invoice_number__startswith=current_year).order_by('-invoice_nuber').first
+                invoice_number__startswith=current_year).order_by('-invoice_number').first
 
             if last_invoice:
                 last_invoice_number = int(last_invoice.invoice_number.split('-')[1])

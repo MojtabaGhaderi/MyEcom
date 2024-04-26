@@ -5,10 +5,14 @@ from UserManagement.models import UserManageModel
 
 
 class PaymentModel(models.Model):
-    # user = models.OneToOneField(UserManageModel, related_name="payment", on_delete=models.CASCADE)
-    invoice = models.ForeignKey(InvoiceModel, on_delete=models.DO_NOTHING)
-    transaction_id = models.CharField(max_length=100)
-    status = models.CharField(max_length=20)
+    user = models.OneToOneField(UserManageModel, related_name="payment", on_delete=models.CASCADE)
+    # invoice = models.ForeignKey(InvoiceModel, on_delete=models.DO_NOTHING, null=True)
+    transaction_id = models.CharField(max_length=100, null=True)
+    status = models.CharField(max_length=50, choices=[
+        ('successful', 'Successful'),
+        ('error', 'Error'),
+        ('pending', 'Pending'),
+    ])
     amount = models.DecimalField(max_digits=15, decimal_places=3, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

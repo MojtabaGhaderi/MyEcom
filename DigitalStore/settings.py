@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'ShoppingCart',
     'PaymentGateway',
     'OrderManagement',
+    'Zarinpal',
 
 ]
 
@@ -167,3 +168,10 @@ CRON_CLASSES = [
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
+
+
+#zarinpal configue
+
+MERCHANT = "00000000-0000-0000-0000-000000000000"
+
+
