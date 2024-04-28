@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('PaymentGateway', '0001_initial'),
+        ('PayManagement', '0001_initial'),
         ('ShoppingCart', '0005_alter_invoicemodel_amount'),
     ]
 

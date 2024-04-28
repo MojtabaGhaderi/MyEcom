@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from PaymentGateway.models import PaymentModel
+from PayManagement.models import PaymentModel
 
 
 class PaymentHistorySerializer(serializers.ModelSerializer):

@@ -2,10 +2,10 @@ from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from PaymentGateway.models import PaymentModel
+from PayManagement.models import InvoiceModel
 from UserManagement.models import UserManageModel
 from ProductCatalog.models import ProductModel
-from .models import ShoppingCartModel, CartItemModel, InvoiceModel
+from .models import ShoppingCartModel, CartItemModel
 from .serializers import ShoppingCartSerializer, ShoppingCartUpdateSerializer, InvoiceSerializer
 from core.permissions import IsAdminOrSelf
 
@@ -94,7 +94,6 @@ class UserShoppingCardView(APIView):
                                                                    'total_discount': total_discount,
                                                                    'final_price': final_price})
         return Response(serializer.data)
-
 
 
 class UserShoppingCartUpdate(generics.UpdateAPIView):

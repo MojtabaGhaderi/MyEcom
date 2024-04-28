@@ -5,6 +5,8 @@ import json
 from django.shortcuts import redirect
 from django.http import JsonResponse, HttpResponse
 
+from ShoppingCart.models import InvoiceModel
+
 # ? sandbox merchant
 if settings.SANDBOX:
     sandbox = 'sandbox'
@@ -18,11 +20,7 @@ ZP_API_STARTPAY = f"https://{sandbox}.zarinpal.com/pg/StartPay/"
 amount = 1000  # Rial / Required
 description = "توضیحات مربوط به تراکنش را در این قسمت وارد کنید"  # Required
 phone = 'YOUR_PHONE_NUMBER'  # Optional
-# Important: need to edit for realy server.
 CallbackURL = 'http://127.0.0.1:8000/pay/verify/'
-
-
-
 
 
 def send_request(request):
@@ -34,7 +32,6 @@ def send_request(request):
         "CallbackURL": CallbackURL,
     }
     data = json.dumps(data)
-    # set content length by data
     headers = {'content-type': 'application/json', 'content-length': str(len(data))}
     try:
         response = requests.post(ZP_API_REQUEST, data=data, headers=headers, timeout=10)
@@ -61,15 +58,15 @@ def verify(request):
         "Amount": amount,
         "Authority": authority,
     }
-    print("authourity:", authority)
     data = json.dumps(data)
-    # set content length by data
+
     headers = {'content-type': 'application/json', 'content-length': str(len(data))}
     response = requests.post(ZP_API_VERIFY, data=data, headers=headers)
 
     if response.status_code == 200:
         response = response.json()
         if response['Status'] == 100:
+            invoice = InvoiceModel(user=request.user, payment_status=True, amount=amount, refid=response['RefId'])
             return JsonResponse({'status': True, 'RefID': response['RefID']})
         else:
             return JsonResponse({'status': False, 'code': str(response['Status'])})
@@ -84,10 +81,6 @@ def payment_view(request):
             payment_url = response_data.get('url')
             return redirect(payment_url)
         else:
-            # Handle the case when payment request fails
             error_code = response_data.get('code')
-            # Render an error page or perform any necessary actions
     else:
-        # Handle the case when the API request fails
         error_message = "API request failed with status code: {}".format(response.status_code)
-        # Render an error page or perform any necessary actions

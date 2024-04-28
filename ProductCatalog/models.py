@@ -28,6 +28,7 @@ class ProductModel(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
     recently_added = models.BooleanField(default=False)
 
+    immediate_delivery = models.BooleanField(default=True)
 
     @property
     def final_price(self):

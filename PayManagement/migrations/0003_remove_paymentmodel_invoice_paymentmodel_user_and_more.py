@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('PaymentGateway', '0002_alter_paymentmodel_invoice_alter_paymentmodel_status_and_more'),
+        ('PayManagement', '0002_alter_paymentmodel_invoice_alter_paymentmodel_status_and_more'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 

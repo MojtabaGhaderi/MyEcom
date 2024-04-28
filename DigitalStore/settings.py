@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'StoreFront',
     'UserManagement',
     'ShoppingCart',
-    'PaymentGateway',
+    'PayManagement',
     'OrderManagement',
     'Zarinpal',
 
