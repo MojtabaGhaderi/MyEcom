@@ -28,7 +28,7 @@ urlpatterns = [
     path('cart/', include('ShoppingCart.urls')),
     path('payment/', include('PaymentGateway.urls')),
     path('orders/', include('OrderManagement.urls')),
-    # path('payment', include('PaymentGateway.urls')),
+    path('pay/', include('Zarinpal.urls')),
 ]
 
 
