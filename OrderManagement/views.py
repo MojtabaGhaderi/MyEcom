@@ -4,18 +4,18 @@ from rest_framework.filters import SearchFilter
 
 from OrderManagement.models import OrdersModel
 from OrderManagement.serializers import OrderSerializer
-from ShoppingCart.models import InvoiceModel
+from PayManagement.models import InvoiceModel
 from core.permissions import IsAdmin
 
 
 def filter_order(queryset, params):
-    pending = params.get('pending')
+    progressing = params.get('Progressing')
     user = params.get('user')
     date = params.get('order_date')
     invoice_number = params.get('invoice_number')
 
-    if pending:
-        queryset = queryset.filter(status='pending')
+    if progressing:
+        queryset = queryset.filter(status='Progressing')
 
     if user:
         queryset = queryset.filter(user=user)

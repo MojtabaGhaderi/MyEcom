@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from .models import ShoppingCartModel, InvoiceModel
+
+from PayManagement.models import InvoiceModel
+from .models import ShoppingCartModel
 
 
 class ShoppingCartSerializer(serializers.ModelSerializer):

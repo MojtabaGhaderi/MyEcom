@@ -6,7 +6,7 @@ from django.utils import timezone
 
 
 class InvoiceModel(models.Model):
-    user = models.OneToOneField(UserManageModel, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserManageModel, null=True, blank=True, on_delete=models.PROTECT)
     invoice_products = models.ManyToManyField(ProductModel, through='InvoiceItemModel')
     payment_status = models.BooleanField(default=False)  # maybe later change this to a choice field.
     # or even a Charfield.
@@ -19,9 +19,10 @@ class InvoiceModel(models.Model):
         if not self.invoice_number:
             current_year = timezone.now().year
             last_invoice = InvoiceModel.objects.filter(
-                invoice_number__startswith=current_year).order_by('-invoice_number').first
+                invoice_number__startswith=current_year).order_by('-invoice_number').first()
 
             if last_invoice:
+                print("last invoice is:", last_invoice)
                 last_invoice_number = int(last_invoice.invoice_number.split('-')[1])
                 new_invoice_number = f"{current_year}-{last_invoice_number + 1:04d}"
 

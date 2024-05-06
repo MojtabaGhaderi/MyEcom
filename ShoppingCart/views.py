@@ -78,7 +78,7 @@ class AddProductToCartView(APIView):
 
 
 class UserShoppingCardView(APIView):
-    permission_classes = IsAdminOrSelf
+    permission_classes = [IsAdminOrSelf]
     serializer_class = ShoppingCartSerializer
 
     def get_object(self):
@@ -93,6 +93,11 @@ class UserShoppingCardView(APIView):
         serializer = self.serializer_class(shopping_cart, context={'total_price': total_price,
                                                                    'total_discount': total_discount,
                                                                    'final_price': final_price})
+        request.session['final_price'] = str(final_price)
+        request.session['shopping_cart_id'] = shopping_cart.id
+        request.session.modified = True
+
+
         return Response(serializer.data)
 
 
@@ -155,11 +160,12 @@ class EmptyUserShoppingCart(generics.DestroyAPIView):
 
 
 class InvoiceListView(generics.ListAPIView):
-    permission_classes = IsAdminOrSelf
+    permission_classes = [IsAdminOrSelf]
     queryset = InvoiceModel.objects.all()
     serializer_class = InvoiceSerializer
 # permission for being admin. we want to add a permission so admins can come here too. I think I must add an if
     # statement in def get_queryset
+
     def get_queryset(self):
         user = self.request.user
         queryset = InvoiceModel.objects.filter(user=user)
