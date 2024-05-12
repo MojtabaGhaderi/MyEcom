@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 
 from PayManagement.models import InvoiceModel
 from UserManagement.models import UserManageModel
-from ProductCatalog.models import ProductModel
+from Backstore.models import ProductModel
 from .models import ShoppingCartModel, CartItemModel
 from .serializers import ShoppingCartSerializer, ShoppingCartUpdateSerializer, InvoiceSerializer
 from core.permissions import IsAdminOrSelf

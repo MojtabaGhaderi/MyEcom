@@ -1,6 +1,6 @@
 from django.db import models
 
-from ProductCatalog.models import ProductModel
+from Backstore.models import ProductModel
 from UserManagement.models import UserManageModel
 from django.utils import timezone
 

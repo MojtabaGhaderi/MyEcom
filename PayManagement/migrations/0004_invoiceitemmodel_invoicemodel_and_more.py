@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('PayManagement', '0003_remove_paymentmodel_invoice_paymentmodel_user_and_more'),
-        ('ProductCatalog', '0012_productmodel_immediate_delivery'),
+        ('Backstore', '0012_productmodel_immediate_delivery'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('quantity', models.PositiveIntegerField()),
                 ('unit_price', models.DecimalField(decimal_places=3, max_digits=10)),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='ProductCatalog.productmodel')),
+                ('product', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='Backstore.productmodel')),
             ],
         ),
         migrations.CreateModel(
@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
                 ('amount', models.DecimalField(decimal_places=3, max_digits=15)),
                 ('invoice_number', models.CharField(max_length=20, unique=True)),
                 ('refid', models.CharField(blank=True, max_length=20, null=True, unique=True)),
-                ('invoice_products', models.ManyToManyField(through='PayManagement.InvoiceItemModel', to='ProductCatalog.productmodel')),
+                ('invoice_products', models.ManyToManyField(through='PayManagement.InvoiceItemModel', to='Backstore.productmodel')),
                 ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL)),
             ],
         ),

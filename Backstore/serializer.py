@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CategoryModel, ProductModel, ProductImage, ProductComment
+from .models import CategoryModel, ProductModel, ProductImage, ProductComment, NotificationModel
 
 
 #  ///////////  Category related serializers  ///////////
@@ -49,7 +49,6 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
 class ProductUpdateSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
 
@@ -57,3 +56,11 @@ class ProductUpdateSerializer(serializers.ModelSerializer):
         model = ProductModel
         fields = ['id', 'special_offer', 'discount']
 
+
+# //////////    Notifications related serializers    //////////
+
+class NotificationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = NotificationModel
+        fields = '__all__'

@@ -9,8 +9,7 @@ from rest_framework.response import Response
 
 from .models import UserManageModel, AdminModel
 from core.permissions import IsAdminOrSelf, IsSuperAdmin
-from .serializers import UserSerializer, UserRegistrationSerializer, UserProfileSerializer, UserLoginSerializer
-
+from .serializers import UserSerializer, UserRegistrationSerializer, UserProfileSerializer
 
 
 # //////////
@@ -40,6 +39,7 @@ from .serializers import UserSerializer, UserRegistrationSerializer, UserProfile
 #         })
 
 
+# // handles login. //
 class LoginAPIView(APIView):
 
     def post(self, request):
@@ -49,7 +49,7 @@ class LoginAPIView(APIView):
         user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)
-            return Response({'detail': 'authentication successfull.'})
+            return Response({'detail': 'authentication was successfull.'})
         return Response({'detail': 'invalid'}, status=status.HTTP_401_UNAUTHORIZED)
 
 

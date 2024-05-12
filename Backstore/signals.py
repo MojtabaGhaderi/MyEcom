@@ -1,10 +1,11 @@
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
 from django.utils import timezone
-
 from .models import ProductModel
 
 
+# // each time a product is saved, this signal checks if the quantity of it 0 or not. if it was 0, then make that
+# product unavailable.//
 @receiver(pre_save, sender=ProductModel)
 def product_availability(sender, instance, **kwargs):
     if instance.numbers == 0:
@@ -13,6 +14,8 @@ def product_availability(sender, instance, **kwargs):
         instance.available = True
 
 
+# // each time a product is saved, this signal makes sure to update the date_added field and recently_added field if
+# necessary. //
 @receiver(pre_save, sender=ProductModel)
 def recently_added_products(sender, instance, **kwargs):
     try:

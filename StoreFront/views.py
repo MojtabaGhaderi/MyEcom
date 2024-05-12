@@ -3,11 +3,12 @@ from rest_framework import generics
 
 from rest_framework.filters import SearchFilter
 
-from ProductCatalog.models import ProductModel, CategoryModel, ProductComment
-from ProductCatalog.serializer import CommentSerializer
+from Backstore.models import ProductModel, NotificationModel, ProductComment
+from Backstore.serializer import CommentSerializer, NotificationSerializer
 from .serializer import ProductsSerializer, ProductDetailSerializer
 
 
+# ability to filter products based on different fields. //
 def filter_products(queryset, params):
     category = params.get('category')
     max_price = params.get('max_price')
@@ -38,6 +39,7 @@ def filter_products(queryset, params):
     return queryset
 
 
+# ability to order products by different fields. //
 def order_products(queryset, params):
     sort_by = params.get('sort_by')
 
@@ -61,7 +63,17 @@ def order_products(queryset, params):
     return queryset
 
 
-# list of all the products or filtering them by category
+class NotificationsListView(generics.ListAPIView):
+    queryset = NotificationModel.objects.all()
+    serializer_class = NotificationSerializer
+
+
+class NotificationDetailView(generics.RetrieveAPIView):
+    queryset = NotificationModel.objects.all()
+    serializer_class = NotificationSerializer
+
+
+# // list of all the products or filtering them by category. //
 class ProductListView(generics.ListAPIView):
     queryset = ProductModel.objects.all()
     serializer_class = ProductsSerializer
@@ -82,6 +94,7 @@ class ProductListView(generics.ListAPIView):
         return queryset
 
 
+# // retrieves comment of a product. //
 class ProductCommentView(generics.ListAPIView):
     queryset = ProductComment.objects.all()
     serializer_class = CommentSerializer
@@ -92,6 +105,7 @@ class ProductCommentView(generics.ListAPIView):
         return queryset
 
 
+# // a view to see Special offers. //
 class SpecialOfferListView(generics.ListAPIView):
     queryset = ProductModel.objects.filter(special_offer=True)
     serializer_class = ProductsSerializer
@@ -112,6 +126,7 @@ class SpecialOfferListView(generics.ListAPIView):
         return queryset
 
 
+# // a view to see last new products. //
 class LastProductsView(generics.ListAPIView):
     queryset = ProductModel.objects.filter(recently_added=True)
     serializer_class = ProductsSerializer
@@ -132,7 +147,7 @@ class LastProductsView(generics.ListAPIView):
         return queryset
 
 
-#  seeing a single product information
+#  // seeing a single product information. //
 class ProductRetrieveView(generics.RetrieveAPIView):
     queryset = ProductModel.objects.all()
     serializer_class = ProductDetailSerializer

@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ProductCatalog', '0007_categorymodel_parent'),
+        ('Backstore', '0007_categorymodel_parent'),
     ]
 
     operations = [
@@ -22,6 +22,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='productmodel',
             name='category',
-            field=models.ManyToManyField(related_name='category', to='ProductCatalog.categorymodel'),
+            field=models.ManyToManyField(related_name='category', to='Backstore.categorymodel'),
         ),
     ]

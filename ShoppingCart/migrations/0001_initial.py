@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('ProductCatalog', '0010_productmodel_date_added_productmodel_recently_added'),
+        ('Backstore', '0010_productmodel_date_added_productmodel_recently_added'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('quantity', models.PositiveIntegerField()),
                 ('unit_price', models.DecimalField(decimal_places=3, max_digits=10)),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='ProductCatalog.productmodel')),
+                ('product', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='Backstore.productmodel')),
             ],
         ),
         migrations.CreateModel(
@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
                 ('invoice_number', models.PositiveIntegerField(default=1)),
                 ('tracking_code', models.PositiveIntegerField(blank=True, null=True)),
                 ('date', models.DateTimeField(auto_now_add=True)),
-                ('invoice_products', models.ManyToManyField(through='ShoppingCart.InvoiceItemModel', to='ProductCatalog.productmodel')),
+                ('invoice_products', models.ManyToManyField(through='ShoppingCart.InvoiceItemModel', to='Backstore.productmodel')),
                 ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
@@ -54,7 +54,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('quantity', models.PositiveIntegerField(default=1)),
-                ('products', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ProductCatalog.productmodel')),
+                ('products', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Backstore.productmodel')),
                 ('shopping_cart', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ShoppingCart.shoppingcartmodel')),
             ],
         ),

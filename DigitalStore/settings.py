@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'django_cron',
-    'ProductCatalog',
+    'Backstore',
     'StoreFront',
     'UserManagement',
     'ShoppingCart',
@@ -48,7 +48,9 @@ INSTALLED_APPS = [
     'OrderManagement',
     'Zarinpal',
 
+
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -161,7 +163,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 CRON_CLASSES = [
-    'ProductCatalog.cron.RecentlyAddedCronJob',
+    'Backstore.cron.RecentlyAddedCronJob',
 ]
 
 

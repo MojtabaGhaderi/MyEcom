@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ProductCatalog', '0009_productmodel_likes_productmodel_sold_counts_and_more'),
+        ('Backstore', '0009_productmodel_likes_productmodel_sold_counts_and_more'),
     ]
 
     operations = [

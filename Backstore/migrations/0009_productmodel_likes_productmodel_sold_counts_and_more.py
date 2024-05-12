@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ProductCatalog', '0008_remove_productmodel_category_alter_productmodel_tag_and_more'),
+        ('Backstore', '0008_remove_productmodel_category_alter_productmodel_tag_and_more'),
     ]
 
     operations = [

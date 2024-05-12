@@ -1,7 +1,8 @@
 from rest_framework import serializers
-from ProductCatalog.models import ProductModel, CategoryModel
+from Backstore.models import ProductModel, CategoryModel
 
 
+# // this one is for more than one product. //
 class ProductsSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -10,6 +11,7 @@ class ProductsSerializer(serializers.ModelSerializer):
         read_only_fields = ['image', 'name', 'price', 'available']
 
 
+# // this one is for just one product. //
 class ProductDetailSerializer(serializers.ModelSerializer):
     final_price = serializers.SerializerMethodField()
 

@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ProductCatalog', '0010_productmodel_date_added_productmodel_recently_added'),
+        ('Backstore', '0010_productmodel_date_added_productmodel_recently_added'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('comment', models.CharField(max_length=512)),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comment', to='ProductCatalog.productmodel')),
+                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comment', to='Backstore.productmodel')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='user_comment', to=settings.AUTH_USER_MODEL)),
             ],
         ),

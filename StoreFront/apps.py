@@ -1,3 +1,4 @@
+# this app handles what users see, like a list of products etc. //
 from django.apps import AppConfig
 
 

@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
                 ('price', models.PositiveBigIntegerField(null=True)),
                 ('discount', models.DecimalField(blank=True, decimal_places=2, max_digits=4, null=True)),
                 ('available', models.BooleanField(default=True)),
-                ('Category', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='category', to='ProductCatalog.categorymodel')),
+                ('Category', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='category', to='Backstore.categorymodel')),
             ],
         ),
         migrations.CreateModel(
@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('image', models.ImageField(upload_to='images/product_image')),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='image', to='ProductCatalog.productmodel')),
+                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='image', to='Backstore.productmodel')),
             ],
         ),
     ]

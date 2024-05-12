@@ -3,9 +3,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from UserManagement.models import UserManageModel
 from UserManagement.serializers import UserSerializer
-from .models import CategoryModel, ProductModel, ProductComment
+from .models import CategoryModel, ProductModel, ProductComment, NotificationModel
 from rest_framework import generics, viewsets, status
-from .serializer import CategorySerializer, ProductAddEditSerializer, ProductUpdateSerializer, CommentSerializer
+from .serializer import CategorySerializer, ProductAddEditSerializer, ProductUpdateSerializer, CommentSerializer, \
+    NotificationSerializer
 from core.permissions import IsAdmin
 
 
@@ -16,17 +17,21 @@ class CategoryTestView(generics.ListAPIView):
     queryset = CategoryModel.objects.all()
 
 
+# // for creating a new category. //
 class CategoryCreateView(generics.CreateAPIView):
     permission_classes = IsAdmin
     serializer_class = CategorySerializer
     queryset = CategoryModel.objects.all()
 
 
+# // for editing categories. //
 class CategoryEditView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = IsAdmin
     serializer_class = CategorySerializer
     queryset = CategoryModel.objects.all()
 
+    # // if a category was going to be deleted, its children would take its
+    # parent(s) as a new parent. //
     def perform_destroy(self, instance):
         parents = instance.parent.all()
         children = CategoryModel.objects.filter(parent=instance)
@@ -42,8 +47,8 @@ class CategoryEditView(generics.RetrieveUpdateDestroyAPIView):
 
 #  /////  ^^^^^  ///////
 
-# //////////    Product related views    //////////
 
+# //////////    Product related views    //////////
 
 class ProductView(viewsets.ModelViewSet):
     permission_classes = IsAdmin
@@ -83,12 +88,14 @@ class ProductView(viewsets.ModelViewSet):
         return Response(status=204)
 
 
-class ProductCommentDelete(generics.DestroyAPIView):  # admin related view
+# // admins can delete a comment. //
+class ProductCommentDelete(generics.DestroyAPIView):
     permission_classes = IsAdmin
     queryset = ProductComment.objects.all()
     serializer_class = CommentSerializer
 
 
+# // batch update for changing special_offer and discount fields for products easier. //
 class ProductBatchUpdateView(APIView):
     permission_classes = IsAdmin
     serializer_class = ProductUpdateSerializer
@@ -108,21 +115,33 @@ class ProductBatchUpdateView(APIView):
             product.save()
 
 
+# //////////    User related views    //////////
+
+# // admins can see a list of users. //
 class UserListView(generics.ListAPIView):
     permission_classes = IsAdmin
     queryset = UserManageModel.objects.all()
     serializer_class = UserSerializer
 
 
+# // admins can see a specific user. //
 class UserRetrieveView(generics.RetrieveUpdateAPIView):
     permission_classes = IsAdmin
     queryset = UserManageModel.objects.all()
     serializer_class = UserSerializer
 
 
+# //////////    Notification related views    //////////
 
 
+class NotificationCreate(generics.CreateAPIView):
+    permission_classes = IsAdmin
+    serializer_class = NotificationSerializer
+    queryset = NotificationModel.objects.all()
 
 
-
+class NotificationEdit(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = IsAdmin
+    serializer_class = NotificationSerializer
+    queryset = NotificationModel.objects.all()
 

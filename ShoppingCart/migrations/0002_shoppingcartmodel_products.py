@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ProductCatalog', '0010_productmodel_date_added_productmodel_recently_added'),
+        ('Backstore', '0010_productmodel_date_added_productmodel_recently_added'),
         ('ShoppingCart', '0001_initial'),
     ]
 
@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='shoppingcartmodel',
             name='products',
-            field=models.ManyToManyField(through='ShoppingCart.CartItemModel', to='ProductCatalog.productmodel'),
+            field=models.ManyToManyField(through='ShoppingCart.CartItemModel', to='Backstore.productmodel'),
         ),
     ]
