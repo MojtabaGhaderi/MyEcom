@@ -8,6 +8,7 @@ from PayManagement.models import InvoiceModel
 from core.permissions import IsAdmin
 
 
+# // admins should be able to filter the list of orders by these following fields. //
 def filter_order(queryset, params):
     progressing = params.get('Progressing')
     user = params.get('user')
@@ -30,6 +31,7 @@ def filter_order(queryset, params):
     return queryset
 
 
+# // admins should be able to sort the list of orders by their order date. //
 def sort_orders(queryset, params):
     sort_by = params.get('sort_by')
     # Add the `-` prefix for descending order
@@ -39,6 +41,7 @@ def sort_orders(queryset, params):
     return queryset
 
 
+# // admins should be able to see a list of orders. //
 class OrderListView(generics.ListAPIView):
     permission_classes = IsAdmin
     filter_backends = [SearchFilter]
@@ -47,6 +50,7 @@ class OrderListView(generics.ListAPIView):
     queryset = OrdersModel.objects.all()
 
 
+# // admins should be able to see a certain order. //
 class OrderDetailView(generics.RetrieveUpdateAPIView):
     permission_classes = IsAdmin
     serializer_class = OrderSerializer

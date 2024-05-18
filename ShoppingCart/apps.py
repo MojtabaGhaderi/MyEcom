@@ -1,3 +1,6 @@
+# // this app handles the features for a shopping cart like adding product, changing in cart, emptying etc. //
+
+
 from django.apps import AppConfig
 
 

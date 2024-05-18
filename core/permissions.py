@@ -16,4 +16,7 @@ class IsAdmin(BasePermission):
 
 class IsAdminOrSelf(BasePermission):
     def has_object_permission(self, request, view, obj):
+
+        if request.user.is_anonymous:
+            return obj.anonymous_user_id == request.session.get('anonymous_user_id')
         return hasattr(request.user, 'admin') or obj == request.user
