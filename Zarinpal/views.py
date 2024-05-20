@@ -171,7 +171,6 @@ class PaymentView(APIView):
             #     print(error_code)
             #     return Response({'message': 'Payment failed'})
 
-
         else:
             error_message = "API request failed with status code: {}".format(response.status_code)
             print(error_message)

@@ -1,33 +1,5 @@
-from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers
-from .models import UserManageModel, AdminModel
-
-
-# // handles login and validation of username and password of the user.//
-# class UserLoginSerializer(serializers.ModelSerializer):
-#     username = serializers.CharField(max_length=255)
-#     password = serializers.CharField(max_length=255)
-#
-#     class Meta:
-#         model = UserManageModel
-#         fields = ['username', 'password']
-#
-#     def validate(self, attrs):
-#         username = attrs.get('username')
-#         password = attrs.get('password')
-#
-#         if username and password:
-#             user = authenticate(username=username, password=password)
-#
-#             if user:
-#                 if not user.is_active:
-#                     raise serializers.ValidationError('User account is not active!')
-#                 attrs['user'] = user
-#                 return attrs
-#             else:
-#                 raise serializers.ValidationError('Invalid username or password!')
-#         else:
-#             raise serializers.ValidationError('Both username and password are required!')
+from .models import UserManageModel
 
 
 # handles registration.//

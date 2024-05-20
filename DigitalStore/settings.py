@@ -89,7 +89,7 @@ WSGI_APPLICATION = 'DigitalStore.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'Ecom',
+        'NAME': 'ecom',
         'USER': 'Moji',
         'PASSWORD': 'Mojtaba426',
         'HOST': 'localhost',

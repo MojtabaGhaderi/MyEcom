@@ -1,15 +1,12 @@
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render
 from rest_framework import generics, status
-from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 from rest_framework.response import Response
 
-from .models import UserManageModel, AdminModel
-from core.permissions import IsAdminOrSelf, IsSuperAdmin
-from .serializers import UserSerializer, UserRegistrationSerializer, UserProfileSerializer
+from .models import UserManageModel
+from core.permissions import IsAdminOrSelf
+from .serializers import UserRegistrationSerializer, UserProfileSerializer
 
 
 # //////////
@@ -25,19 +22,6 @@ from .serializers import UserSerializer, UserRegistrationSerializer, UserProfile
 # /////////
 
 # Views for users:
-
-
-# class UserLoginView(APIView):
-#     def post(self, request):
-#         serializer = TokenObtainPairSerializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         user = serializer.validated_data['username']
-#         refresh = RefreshToken.for_user(user)
-#         return Response({
-#             'access_token': str(refresh.access_token),
-#             'refresh_token': str(refresh),
-#         })
-
 
 # // handles login. //
 class LoginAPIView(APIView):
