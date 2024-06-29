@@ -30,12 +30,15 @@ def calculate_total_price(cart):
 class AddProductToCartView(APIView):
 
     def post(self, request):
+        product_id = request.data.get('product_id')
+        product = ProductModel.objects.get(id=product_id)
+        quantity = int(request.data.get('quantity'))
         try:
             user = self.request.user
 
             # // for authenticated users. //
             if user.is_authenticated:
-                shopping_cart = ShoppingCartModel.objects.get_or_create(user=user)
+                shopping_cart, created = ShoppingCartModel.objects.get_or_create(user=user)
 
             # // for anonymous users. //
             else:
@@ -47,19 +50,18 @@ class AddProductToCartView(APIView):
                     anonymous_user_id = str(uuid.uuid4())
                     request.session['anonymous_user_id'] = anonymous_user_id
 
-                shopping_cart = ShoppingCartModel.objects.get_or_create(anonymous_user_id=anonymous_user_id)
+                shopping_cart, created = ShoppingCartModel.objects.get_or_create(anonymous_user_id=anonymous_user_id)
 
         except UserManageModel.DoesNotExist:
             return Response('User not found.', status=status.HTTP_404_NOT_FOUND)
-        product_id = request.data.get('product_id')
-        product = ProductModel.objects.get(id=product_id)
 
-        quantity = int(request.data.get('quantity'))
-        if quantity > product.numbers:
+        if quantity > product.quantity:
             return Response('number of selected product is more than the available numbers.')
         if not product.available:
             return Response('product is not available now.')
 
+        # shopping_cart = shopping_cart(0)
+        print('shopping cart is ', shopping_cart)
         cart_item, created = CartItemModel.objects.get_or_create(
             shopping_cart=shopping_cart,
             products=product,
@@ -67,7 +69,7 @@ class AddProductToCartView(APIView):
         )
         if not created:
             cart_item.quantity += quantity
-            if cart_item.quantity > product.numbers:
+            if cart_item.quantity > product.quantity:
                 return Response('number of selected product is more than the available numbers.')
             cart_item.save()
 

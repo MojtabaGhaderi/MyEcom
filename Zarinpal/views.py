@@ -7,10 +7,13 @@ import json
 
 from django.shortcuts import redirect
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 import ShoppingCart
+from Backstore.models import DiscountCodeModel
+from Backstore.serializer import DiscountCodeSerializer
 from PayManagement.models import InvoiceModel
 from ShoppingCart.models import ShoppingCartModel
 from django.urls import reverse
@@ -139,13 +142,16 @@ class PaymentView(APIView):
         description = request.data.get('description')
         if not description:
             description = "something"
-        final_price = request.session.get('final_price')
-        print("final price is:", final_price)
+
+        amount = request.session.get('Amount')
+        if not amount:
+            amount = request.session.get('final_price')
+        print("final price is:", amount)
         data = {
             "Phone_number": phone_number,
             "Email": email,
             "Description": description,
-            'Amount': final_price,
+            'Amount': amount,
         }
 
         request.session['data'] = data
@@ -211,3 +217,21 @@ class MiddlePayView(APIView):
 #             error_code = response_data.get('code')
 #     else:
 #         error_message = "API request failed with status code: {}".format(response.status_code)
+class DiscountCodeApplyView(APIView):
+    def post(self, request):
+        discount_code = request.data.get('discount_code')
+
+        try:
+            discount = DiscountCodeModel.objects.get(discount_code=discount_code, avalable=True)
+            final_price = request.session.get('final_price')
+            amount = str(final_price * (100 - discount.percentage))
+            request.session['Amount'] = amount
+            request.session.modified = True
+
+            serializer = DiscountCodeSerializer(discount)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except DiscountCodeModel.DoesNotExist:
+            return Response({'error': ' Invalid code'}, status=status.HTTP_400_BAD_REQUEST)
+
+

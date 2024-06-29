@@ -94,6 +94,9 @@ DATABASES = {
         'PASSWORD': 'Mojtaba426',
         'HOST': 'localhost',
         'PORT': '3306',
+        'TEST': {
+            'NAME': 'test_ecom_db',
+        }
     }
 }
 
@@ -175,4 +178,6 @@ SESSION_COOKIE_SAMESITE = 'Lax'
 
 MERCHANT = "00000000-0000-0000-0000-000000000000"
 
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
+DELETED_USER_ID = 999

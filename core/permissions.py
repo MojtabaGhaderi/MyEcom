@@ -11,7 +11,12 @@ class IsSuperAdmin(BasePermission):
 
 class IsAdmin(BasePermission):
     def has_permission(self, request, view):
-        return hasattr(request.user, 'admin')
+        if request.user and request.user.is_authenticated:
+            try:
+                return request.user.admin.role in ['super_admin', 'regular_admin']
+            except AdminModel.DoesNotExist:
+                return False
+        return False
 
 
 class IsAdminOrSelf(BasePermission):

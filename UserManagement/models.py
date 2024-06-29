@@ -13,7 +13,7 @@ class UserManageModel(AbstractUser):
 
 # // adds 2 roles for specific users. this model determines admins.//
 class AdminModel(models.Model):
-    user = models.OneToOneField(UserManageModel, on_delete=models.CASCADE)
+    user = models.OneToOneField(UserManageModel, on_delete=models.CASCADE, related_name='admin')
     role = models.CharField(max_length=50, choices=[
         ('super_admin', 'Super Admin'),
         ('regular_admin', 'Admin'),
@@ -21,4 +21,4 @@ class AdminModel(models.Model):
     created_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.user.username} ({self.role}"
+        return f"{self.user.username} {self.role}"

@@ -6,10 +6,10 @@ from django.utils import timezone
 
 
 class InvoiceModel(models.Model):
-    user = models.ForeignKey(UserManageModel, null=True, blank=True, on_delete=models.PROTECT)
+    user = models.ForeignKey(UserManageModel, null=True, blank=True, on_delete=models.SET_NULL)
+    anonymous_user_id = models.CharField(max_length=36, null=True, blank=True)
     invoice_products = models.ManyToManyField(ProductModel, through='InvoiceItemModel')
-    payment_status = models.BooleanField(default=False)  # maybe later change this to a choice field.
-    # or even a Charfield.
+    successful_payment = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now_add=True)
     amount = models.DecimalField(max_digits=15, decimal_places=3)
     invoice_number = models.CharField(max_length=20, unique=True)
@@ -33,8 +33,11 @@ class InvoiceModel(models.Model):
 
 
 class InvoiceItemModel(models.Model):
-    invoice = models.ForeignKey(InvoiceModel, on_delete=models.CASCADE)
+    invoice = models.ForeignKey(InvoiceModel, on_delete=models.CASCADE, related_name='invoice_items')
     product = models.ForeignKey(ProductModel, on_delete=models.DO_NOTHING)
     quantity = models.PositiveIntegerField()
-    unit_price = models.DecimalField(max_digits=10, decimal_places=3)
+    price_at_purchase = models.DecimalField(max_digits=10, decimal_places=3)
+
+    def __str__(self):
+        return f"Purchase of {self.product.name} on Invoice #{self.invoice.invoice_number}"
 
