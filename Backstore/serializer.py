@@ -27,11 +27,9 @@ class ImageSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate(self, attrs):
-        print("Validating image data:", attrs)
         return super().validate(attrs)
 
     def create(self, validated_data):
-        print("Creating ProductImage with data:", validated_data)
         return super().create(validated_data)
 
 
@@ -45,7 +43,6 @@ class ProductAddEditSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate(self, attrs):
-        print("Validating data:", attrs)
         return super().validate(attrs)
 
     def create_images(self, product, images_data):
@@ -54,11 +51,9 @@ class ProductAddEditSerializer(serializers.ModelSerializer):
         image_serializer.save(product=product)
 
     def create(self, validated_data):
-        print("we are inside of the create method of our product add-edit-serializer and validated data is:",
-              validated_data)
+
 
         images_data = self.context.get('request').FILES.getlist('images')
-        print('image data is:', images_data)
 
         category_data = validated_data.pop('category', None)
         tags = validated_data.pop('tags', [])
@@ -94,7 +89,6 @@ class ProductBatchUpdateItemSerializer(serializers.Serializer):
     category = serializers.ListField(child=serializers.IntegerField(), required=False)
 
     def update(self, instance, validated_data):
-        print("validated_data:", validated_data)
         try:
             product = ProductModel.objects.get(pk=validated_data.get('id'))
             product.special_offer = validated_data.get('special_offer')
@@ -146,8 +140,11 @@ class DiscountCodeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Percentage cannot be negative')
         if data['quantity'] < 0:
             raise serializers.ValidationError('Quantity cannot be negative')
-        if data['time_period'] < timedelta(seconds=0):
-            raise serializers.ValidationError('duration cannot be negative')
+        try:
+            if data['time_period'] < timedelta(seconds=0):
+                raise serializers.ValidationError('duration cannot be negative')
+        except:
+            pass
 
         return data
 # keep in mind adding a custom field with validators

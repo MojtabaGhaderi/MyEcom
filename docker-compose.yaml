@@ -1,0 +1,16 @@
+version: '3.7'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_SETTINGS_MODULE=DigitalStore.settings
+    volumes:
+      - ./:/app
+    depends_on:
+      - tests
+  tests:
+    build: .
+    entrypoint: python manage.py test

@@ -1,0 +1,7 @@
+Django==5.0
+pillow
+requests
+django-cron
+djangorestframework
+mysqlclient
+djangorestframework-simplejwt

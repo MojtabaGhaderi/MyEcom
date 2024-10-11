@@ -61,7 +61,6 @@ class AddProductToCartView(APIView):
             return Response('product is not available now.')
 
         # shopping_cart = shopping_cart(0)
-        print('shopping cart is ', shopping_cart)
         cart_item, created = CartItemModel.objects.get_or_create(
             shopping_cart=shopping_cart,
             products=product,

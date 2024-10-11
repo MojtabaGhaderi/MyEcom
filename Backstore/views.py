@@ -64,7 +64,6 @@ class ProductView(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
-        print("we are in create method of the view")
         if isinstance(request.data, list):
             valid_data = []
             errors = []
@@ -89,7 +88,6 @@ class ProductView(viewsets.ModelViewSet):
                 )
 
         else:
-            print("request.daata is:", request.data)
             serializer = self.get_serializer(data=request.data)
 
             serializer.is_valid(raise_exception=True)
@@ -135,16 +133,21 @@ class ProductBatchUpdateView(generics.UpdateAPIView):
         for item in request.data:
             serializer = self.get_serializer(data=item)
             if serializer.is_valid:
-                valid_data.append(serializer)
+                serializer.is_valid(raise_exception=True)
+                valid_data.append(serializer.validated_data)
             else:
                 invalid_data.append({
                     'data': item,
                     'error': serializer.errors
                 })
 
-        for serializer in valid_data:
-            serializer.is_valid(raise_exception=True)
-            serializer.update()
+        queryset = ProductModel.objects.filter(id__in=[item['id'] for item in valid_data])
+
+        for instance in queryset:
+            for i in range(len(valid_data)):
+                for field, value in valid_data[i].items():
+                    setattr(instance, field, value)
+                instance.save()
 
         if invalid_data:
             return Response(invalid_data, status=status.HTTP_207_MULTI_STATUS)
